@@ -1,0 +1,559 @@
+<!-- file: index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Triangle Solver</title>
+    <style>
+      /* General Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        color: #f8fafc;
+        overflow: hidden;
+      }
+
+      /* Full Page Container */
+      .page {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        opacity: 1;
+        transition: opacity 0.8s ease-in-out;
+        z-index: 1;
+      }
+
+      .hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* Home Page */
+      #home {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        animation: gradientAnimation 10s infinite alternate;
+      }
+
+      @keyframes gradientAnimation {
+        0% {
+          background: linear-gradient(135deg, #0f172a, #1e293b);
+        }
+        50% {
+          background: linear-gradient(135deg, #1e293b, #0f172a);
+        }
+        100% {
+          background: linear-gradient(135deg, #0f172a, #1e293b);
+        }
+      }
+
+      h1 {
+        font-size: 48px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        background: linear-gradient(90deg, #38bdf8, #3b82f6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+      }
+
+      p {
+        font-size: 18px;
+        color: #94a3b8;
+        margin-bottom: 30px;
+        text-align: center;
+        max-width: 600px;
+      }
+
+      button {
+        padding: 15px 30px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #f8fafc;
+        background: linear-gradient(90deg, #3b82f6, #38bdf8);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        background: linear-gradient(90deg, #2563eb, #0ea5e9);
+      }
+
+      /* Comparison Table */
+      .comparison-table {
+        margin-top: 50px;
+        width: 80%;
+        max-width: 800px;
+        border-collapse: collapse;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        border: 1px solid #334155;
+        padding: 15px;
+        text-align: center;
+      }
+
+      .comparison-table th {
+        background: #1e293b;
+        color: #f8fafc;
+        font-weight: bold;
+      }
+
+      .comparison-table td {
+        background: #0f172a;
+        color: #94a3b8;
+      }
+
+      /* Triangle Solver Page */
+      #triangle-solver {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        animation: gradientAnimation 10s infinite alternate;
+        text-align: center;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .content-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        margin-top: 20px;
+        width: 100%;
+        max-width: 900px;
+      }
+
+      .input-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        flex: 1;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      select {
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        background: #1e293b;
+        color: #f8fafc;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+
+      select:focus {
+        background: #334155;
+      }
+
+      input {
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        background: #1e293b;
+        color: #f8fafc;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+
+      input:focus {
+        background: #334155;
+      }
+
+      .button-group {
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+      }
+
+      .result-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .result {
+        font-size: 18px;
+        font-weight: bold;
+        color: #38bdf8;
+      }
+
+      .steps {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #94a3b8;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 8px;
+        text-align: left;
+      }
+
+      canvas {
+        border: 1px solid #334155;
+        border-radius: 8px;
+        width: 400px;
+        height: 400px;
+      }
+
+      footer {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #94a3b8;
+        text-align: center;
+      }
+
+      .trademark {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #94a3b8;
+        text-align: center;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Home Page -->
+    <div id="home" class="page">
+      <h1>Welcome to Triangle Solver</h1>
+      <p>
+        Effortlessly calculate the missing side of a right triangle using the
+        Pythagorean theorem. Click below to get started!
+      </p>
+      <button onclick="goToSolver()">Go to Triangle Solver</button>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Our Triangle Solver</th>
+            <th>Other Solvers</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ease of Use</td>
+            <td>✅ Simple and intuitive</td>
+            <td>❌ Often confusing</td>
+          </tr>
+          <tr>
+            <td>Visualization</td>
+            <td>✅ Dynamic triangle drawing</td>
+            <td>❌ No visualization</td>
+          </tr>
+          <tr>
+            <td>Step-by-Step Explanation</td>
+            <td>✅ Detailed steps provided</td>
+            <td>❌ Lacks explanation</td>
+          </tr>
+          <tr>
+            <td>Modern Design</td>
+            <td>✅ Sleek and responsive</td>
+            <td>❌ Outdated interfaces</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="trademark">© Guillermo Alejandro Lopez Guerra</div>
+    </div>
+
+    <!-- Triangle Solver Page -->
+    <div id="triangle-solver" class="page">
+      <h1>Triangle Solver</h1>
+      <p>
+        Choose how you want to solve the triangle: using sides only or with angles and sides.
+      </p>
+      <div class="content-container">
+        <!-- Input Section -->
+        <div class="input-container">
+          <div class="input-group">
+            <select id="solveMode" onchange="toggleMode()">
+              <option value="sides">Solve with Sides Only</option>
+              <option value="angles">Solve with Angles and Sides</option>
+            </select>
+          </div>
+          <div class="input-group" id="sidesInputs">
+            <input
+              type="number"
+              id="sideA"
+              placeholder="Side A (leave blank if unknown)"
+              step="any"
+            />
+            <input
+              type="number"
+              id="sideB"
+              placeholder="Side B (leave blank if unknown)"
+              step="any"
+            />
+            <input
+              type="number"
+              id="sideC"
+              placeholder="Hypotenuse (leave blank if unknown)"
+              step="any"
+            />
+          </div>
+          <div class="input-group hidden" id="anglesInputs">
+            <input type="number" id="angleA" placeholder="Angle A (in degrees)" step="any">
+            <input type="number" id="angleB" placeholder="Angle B (in degrees)" step="any">
+            <input type="number" id="sideCWithAngles" placeholder="Side C (Hypotenuse)" step="any">
+          </div>
+          <div class="button-group">
+            <button onclick="calculateSide()">Solve Triangle</button>
+            <button onclick="resetForm()">Reset</button>
+          </div>
+        </div>
+
+        <!-- Result Section -->
+        <div class="result-container">
+          <div class="result" id="result"></div>
+          <canvas id="triangleCanvas"></canvas>
+        </div>
+      </div>
+      <div class="steps" id="steps"></div>
+      <button onclick="goToHome()">Back to Home</button>
+      <footer>
+        <p>Made with ❤️ to help you solve triangles!</p>
+      </footer>
+    </div>
+
+    <script>
+      // Function to navigate to the Triangle Solver page
+      function goToSolver() {
+        const homePage = document.getElementById('home');
+        const solverPage = document.getElementById('triangle-solver');
+
+        // Fade out the home page
+        homePage.classList.add('hidden');
+
+        // Wait for the fade-out animation to complete, then show the solver page
+        setTimeout(() => {
+          solverPage.style.pointerEvents = 'all';
+          solverPage.style.opacity = '1';
+        }, 800);
+      }
+
+      // Function to navigate back to the Home page
+      function goToHome() {
+        const homePage = document.getElementById('home');
+        const solverPage = document.getElementById('triangle-solver');
+
+        // Fade out the solver page
+        solverPage.style.opacity = '0';
+        solverPage.style.pointerEvents = 'none';
+
+        // Wait for the fade-out animation to complete, then show the home page
+        setTimeout(() => {
+          homePage.classList.remove('hidden');
+        }, 800);
+      }
+
+      // Toggle between solving modes
+      function toggleMode() {
+        const sidesInputs = document.getElementById('sidesInputs');
+        const anglesInputs = document.getElementById('anglesInputs');
+        const solveMode = document.getElementById('solveMode').value;
+
+        if (solveMode === 'sides') {
+          sidesInputs.classList.remove('hidden');
+          anglesInputs.classList.add('hidden');
+        } else {
+          sidesInputs.classList.add('hidden');
+          anglesInputs.classList.remove('hidden');
+        }
+
+        // Clear the steps when switching modes
+        document.getElementById('steps').textContent = '';
+      }
+
+      // Function to calculate the missing side or angle of the triangle
+      function calculateSide() {
+        const solveMode = document.getElementById('solveMode').value;
+        const resultDiv = document.getElementById('result');
+        const stepsDiv = document.getElementById('steps');
+        const canvas = document.getElementById('triangleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Clear previous results
+        resultDiv.textContent = '';
+        stepsDiv.textContent = '';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (solveMode === 'sides') {
+          // Solve using sides only
+          const sideA = parseFloat(document.getElementById('sideA').value);
+          const sideB = parseFloat(document.getElementById('sideB').value);
+          const sideC = parseFloat(document.getElementById('sideC').value);
+
+          if (isNaN(sideA)) {
+            if (!isNaN(sideB) && !isNaN(sideC) && sideC > sideB) {
+              const calculatedA = Math.sqrt(sideC ** 2 - sideB ** 2).toFixed(2);
+              const angleA = (Math.asin(calculatedA / sideC) * (180 / Math.PI)).toFixed(2);
+              const angleB = (90 - angleA).toFixed(2);
+              const triangleType = "Right Triangle";
+              resultDiv.textContent = `Side A is ${calculatedA} (${triangleType})`;
+              stepsDiv.innerHTML = `
+                <strong>Steps:</strong><br>
+                1. Use the Pythagorean theorem: <code>c² = a² + b²</code>.<br>
+                2. Rearrange to solve for <code>a</code>: <code>a² = c² - b²</code>.<br>
+                3. Substitute the values: <code>a² = ${sideC}² - ${sideB}²</code>.<br>
+                4. Calculate: <code>a² = ${(sideC ** 2).toFixed(2)} - ${(sideB ** 2).toFixed(2)}</code>.<br>
+                5. Simplify: <code>a² = ${(sideC ** 2 - sideB ** 2).toFixed(2)}</code>.<br>
+                6. Take the square root: <code>a = ${calculatedA}</code>.
+              `;
+              drawTriangle(calculatedA, sideB, sideC, angleA, angleB);
+            } else {
+              resultDiv.textContent = 'Invalid input for Side B and Hypotenuse.';
+            }
+          } else if (isNaN(sideB)) {
+            if (!isNaN(sideA) && !isNaN(sideC) && sideC > sideA) {
+              const calculatedB = Math.sqrt(sideC ** 2 - sideA ** 2).toFixed(2);
+              const angleA = (Math.asin(sideA / sideC) * (180 / Math.PI)).toFixed(2);
+              const angleB = (90 - angleA).toFixed(2);
+              const triangleType = "Right Triangle";
+              resultDiv.textContent = `Side B is ${calculatedB} (${triangleType})`;
+              stepsDiv.innerHTML = `
+                <strong>Steps:</strong><br>
+                1. Use the Pythagorean theorem: <code>c² = a² + b²</code>.<br>
+                2. Rearrange to solve for <code>b</code>: <code>b² = c² - a²</code>.<br>
+                3. Substitute the values: <code>b² = ${sideC}² - ${sideA}²</code>.<br>
+                4. Calculate: <code>b² = ${(sideC ** 2).toFixed(2)} - ${(sideA ** 2).toFixed(2)}</code>.<br>
+                5. Simplify: <code>b² = ${(sideC ** 2 - sideA ** 2).toFixed(2)}</code>.<br>
+                6. Take the square root: <code>b = ${calculatedB}</code>.
+              `;
+              drawTriangle(sideA, calculatedB, sideC, angleA, angleB);
+            } else {
+              resultDiv.textContent = 'Invalid input for Side A and Hypotenuse.';
+            }
+          } else if (isNaN(sideC)) {
+            if (!isNaN(sideA) && !isNaN(sideB)) {
+              const calculatedC = Math.sqrt(sideA ** 2 + sideB ** 2).toFixed(2);
+              const angleA = (Math.asin(sideA / calculatedC) * (180 / Math.PI)).toFixed(2);
+              const angleB = (90 - angleA).toFixed(2);
+              const triangleType = "Right Triangle";
+              resultDiv.textContent = `Hypotenuse is ${calculatedC} (${triangleType})`;
+              stepsDiv.innerHTML = `
+                <strong>Steps:</strong><br>
+                1. Use the Pythagorean theorem: <code>c² = a² + b²</code>.<br>
+                2. Substitute the values: <code>c² = ${sideA}² + ${sideB}²</code>.<br>
+                3. Calculate: <code>c² = ${(sideA ** 2).toFixed(2)} + ${(sideB ** 2).toFixed(2)}</code>.<br>
+                4. Simplify: <code>c² = ${(sideA ** 2 + sideB ** 2).toFixed(2)}</code>.<br>
+                5. Take the square root: <code>c = ${calculatedC}</code>.
+              `;
+              drawTriangle(sideA, sideB, calculatedC, angleA, angleB);
+            } else {
+              resultDiv.textContent = 'Invalid input for Side A and Side B.';
+            }
+          } else {
+            resultDiv.textContent = 'Leave one side blank to calculate it.';
+          }
+        } else if (solveMode === 'angles') {
+          // Solve using angles and sides
+          const angleA = parseFloat(document.getElementById('angleA').value);
+          const angleB = parseFloat(document.getElementById('angleB').value);
+          const sideC = parseFloat(document.getElementById('sideCWithAngles').value);
+
+          if (!isNaN(angleA) && !isNaN(angleB) && !isNaN(sideC)) {
+            const angleC = 180 - angleA - angleB;
+            const sideA = (sideC * Math.sin((angleA * Math.PI) / 180) / Math.sin((angleC * Math.PI) / 180)).toFixed(2);
+            const sideB = (sideC * Math.sin((angleB * Math.PI) / 180) / Math.sin((angleC * Math.PI) / 180)).toFixed(2);
+
+            resultDiv.textContent = `Side A: ${sideA}, Side B: ${sideB}, Angle C: ${angleC.toFixed(2)}°`;
+            stepsDiv.innerHTML = `
+              <strong>Steps:</strong><br>
+              1. Use the law of sines: <code>a / sin(A) = b / sin(B) = c / sin(C)</code>.<br>
+              2. Calculate Angle C: <code>C = 180° - A - B</code>.<br>
+              3. Substitute values into the law of sines:<br>
+              - <code>Side A = c * sin(A) / sin(C)</code><br>
+              - <code>Side B = c * sin(B) / sin(C)</code><br>
+              4. Solve for Side A and Side B.<br>
+              5. Result: <code>Side A = ${sideA}, Side B = ${sideB}, Angle C = ${angleC.toFixed(2)}°</code>.
+            `;
+            drawTriangle(sideA, sideB, sideC, angleA, angleB);
+          } else {
+            resultDiv.textContent = 'Please provide valid angles and the hypotenuse.';
+          }
+        }
+      }
+
+      // Function to draw the triangle on the canvas
+      function drawTriangle(a, b, c, angleA, angleB) {
+        const canvas = document.getElementById('triangleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Scale the triangle to fit the canvas
+        const scale = 300 / Math.max(a, b, c);
+
+        const scaledA = a * scale;
+        const scaledB = b * scale;
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the triangle
+        ctx.beginPath();
+        ctx.moveTo(50, 350); // Bottom-left corner
+        ctx.lineTo(50 + scaledB, 350); // Bottom-right corner
+        ctx.lineTo(50, 350 - scaledA); // Top-left corner
+        ctx.closePath();
+
+        // Fill the triangle
+        ctx.fillStyle = '#38bdf8';
+        ctx.fill();
+
+        // Draw the triangle outline
+        ctx.strokeStyle = '#f8fafc';
+        ctx.stroke();
+
+        // Label the sides
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '18px Arial';
+        ctx.fillText(`A = ${a}`, 10, 350 - scaledA / 2); // Side A
+        ctx.fillText(`B = ${b}`, 50 + scaledB / 2, 370); // Side B
+        ctx.fillText(`C = ${c}`, 50 + scaledB / 2 + 10, 350 - scaledA / 2 - 10); // Hypotenuse
+
+        // Label the angles
+        ctx.fillText(`${angleA}°`, 30, 350 - scaledA + 20); // Angle A
+        ctx.fillText(`${angleB}°`, 50 + scaledB - 30, 370); // Angle B
+        ctx.fillText(`90°`, 60, 350 - 10); // Right angle
+      }
+
+      // Function to reset the form
+      function resetForm() {
+        document.getElementById('sideA').value = '';
+        document.getElementById('sideB').value = '';
+        document.getElementById('sideC').value = '';
+        document.getElementById('angleA').value = '';
+        document.getElementById('angleB').value = '';
+        document.getElementById('sideCWithAngles').value = '';
+        document.getElementById('result').textContent = '';
+        document.getElementById('steps').textContent = '';
+        const canvas = document.getElementById('triangleCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    </script>
+  </body>
+</html>
